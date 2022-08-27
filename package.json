@@ -4,5 +4,14 @@
   "main": "index.js",
   "repository": "https://github.com/Nicholasjr/market-place.git",
   "author": "Nicholasjr <nicholasduadei14@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.3",
+    "morgan": "^1.10.0"
+  }
 }
