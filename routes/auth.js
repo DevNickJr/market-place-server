@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
     const pword = req.body.password;
     const user = await User.findOne({username: username});
     
-    res.status(200).json(user);
+    // res.status(200).json(user);
     if (!user) {
         res.status(404).json({
             status: "failed",
