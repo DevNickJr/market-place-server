@@ -22,8 +22,7 @@ router.post("/register", async (req, res) => {
     } 
     catch (err) {
         console.log(err);
-        // res.send(err);
-        res.status(500).json("Internal server error")
+        res.status(500).send(err)
     }
 })
 
@@ -38,7 +37,7 @@ router.post("/login", async (req, res) => {
             status: "failed",
             message: "user not found"
         });
-    } else if (!(await bcrypt.compare(pword, user.password)) ) {
+    } else if (pword && !(await bcrypt.compare(pword, user.password)) ) {
         res.status(400).json({
             status: "failed",
             message: "invalid password"
@@ -52,10 +51,10 @@ router.post("/login", async (req, res) => {
             token: token
         });
     }
-    !user && res.status(404).json({
-        status: "failed",
-        message: "user not found"
-    });
+    // !user && res.status(404).json({
+    //     status: "failed",
+    //     message: "user not found"
+    // });
 
     // !(await bcrypt.compare(pword, user.password)) && res.status(400).json({
     //     status: "failed",

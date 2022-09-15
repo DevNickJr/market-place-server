@@ -5,6 +5,7 @@ const UserSchema = mongoose.Schema({
         type:String, 
         required: true,
         unique: true,
+        message: "Already exists"
     },
     password: {
         type:String, 

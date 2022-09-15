@@ -6,7 +6,7 @@ const CartSchema = mongoose.Schema({
         required: true,
         unique: true,
     },
-    products: {
+    product_ids: {
         type:Array, 
         required: true,
     },

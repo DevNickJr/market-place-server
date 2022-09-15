@@ -13,6 +13,10 @@ const OrderSchema = mongoose.Schema({
         type:Array, 
         required: true,
     },
+    txn_ref: {
+        type:String,
+        required: true
+    },
     txn_status: {
         type:String,
         required: true,
