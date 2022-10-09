@@ -3,9 +3,17 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const JWT_SEC = process.env.JWT_SEC || 5000;
+const JWT_SEC = process.env.JWT_SEC || "blaaaaaaaaaaaaaaaah";
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res) => { 
+    if (!req.body.username || !req.body.email || !req.body.password) return res.json({ message: "all fields are required" });
+
+    const email_exists = await User.findOne({email: req.body.email});
+    if (email_exists) return res.json({ message: "email already exists" });
+
+    const username_exists = await User.findOne({username: req.body.username});
+    if (username_exists) return res.json({ message: "username already exists" });
+    
     const password = await bcrypt.hash(req.body.password, 10);
     const user = new User({
         username: req.body.username,
@@ -29,9 +37,8 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     const username = req.body.username;
     const pword = req.body.password;
-    const user = await User.findOne({username: username});
-    
-    // res.status(200).json(user);
+
+    const user = await User.findOne({username: username}).lean();
     if (!user) {
         res.status(404).json({
             status: "failed",
@@ -43,31 +50,14 @@ router.post("/login", async (req, res) => {
             message: "invalid password"
         });
     } else {
-        const {password, ...data} = user._doc;
-        const token = await jwt.sign(data, JWT_SEC);
+        const {password, ...data} = user;
+        const token = await jwt.sign(data, JWT_SEC, {expiresIn: "1d"});
         res.status(200).json({
             status: "success",
             message: "Login Success",
             token: token
         });
     }
-    // !user && res.status(404).json({
-    //     status: "failed",
-    //     message: "user not found"
-    // });
-
-    // !(await bcrypt.compare(pword, user.password)) && res.status(400).json({
-    //     status: "failed",
-    //     message: "invalid password"
-    // });
-
-    // const {password, ...data} = user._doc;
-    // const token = await jwt.sign(data, JWT_SEC);
-    // res.status(200).json({
-    //     status: "success",
-    //     message: "Login Success",
-    //     token: token
-    // });
     })
 
 

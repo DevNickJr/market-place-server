@@ -9,6 +9,9 @@ router.put("/:id", verifyTokenAndAuthorise, async (req, res) => {
     if (req.body.password) {
         req.body.password = await bcrypt.hash(req.body.password, 10);
     }
+    if (req.body.isAdmin) {
+        req.body.isAdmin = false
+    }
     try {
         const user = await User.findByIdAndUpdate(req.params.id, {
             $set: req.body
@@ -17,7 +20,8 @@ router.put("/:id", verifyTokenAndAuthorise, async (req, res) => {
             res.status(404).json("User Not found")
         } 
         else {
-            res.status(200).json(user);
+            const {password, ...data} = user._doc;
+            res.status(200).json(data);
         }
     }
     catch (err) {
@@ -32,7 +36,8 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             res.status(404).json("No users found");
         }
         else {
-            res.status(200).json(users)
+            const {password, ...data} = users;
+            res.status(200).json(data)
         }
     }
     catch (err) {
@@ -46,7 +51,8 @@ router.get("/:id", verifyTokenAndAuthorise, async (req, res) => {
             res.status(404).json("User does not exist");
         }
         else {
-            res.status(200).json(user)
+            const {password, ...data} = user;
+            res.status(200).json(data);
         }
     }
     catch (err) {
@@ -61,10 +67,11 @@ router.delete("/:id", verifyTokenAndAuthorise, async (req, res) => {
             res.status(404).json("User does not exist, delete failed")
         }
         else {
+            const {password, ...data} = user;
             res.status(200).json({
                 status: "success",
                 message: "User Deleted Successfully",
-                data: user
+                data: data
             });
         }
     }
